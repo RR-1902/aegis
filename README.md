@@ -302,6 +302,7 @@ execute blocking or remediation actions.
 - [Response](docs/response.md) - Simulation-only response handling and safety boundary
 - [Security Events](docs/security_events.md) - Durable security-event model and SQLite persistence
 - [Pipeline](docs/pipeline.md) - End-to-end runtime orchestration and callback wiring
+- [Validation](docs/validation.md) - Deterministic in-memory traffic validation strategy
 
 
 ## 🎓 Educational Value
