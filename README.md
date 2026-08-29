@@ -6,15 +6,14 @@ AEGIS is a complete academic-grade but genuinely functional Network Intrusion De
 
 ## 🛡️ What is AEGIS?
 
-AEGIS is a defensive security system that:
+AEGIS is a defensive security system that currently:
 
 - **Observes** network traffic in real-time
 - **Analyzes** packets, flows, and protocol behavior
-- **Detects** suspicious patterns using deterministic rules and machine learning
-- **Scores** threats based on multiple evidence sources
-- **Responds** with controlled defensive actions
-- **Logs** all security events for audit trails
-- **Visualizes** activity through a real-time dashboard
+- **Detects** suspicious patterns using deterministic rules
+- **Scores** combined detection evidence with heuristic risk scoring
+
+Planned future phases include response, event persistence, dashboards, and ML-based analysis.
 
 ## 🎯 Project Goals
 
@@ -32,6 +31,8 @@ Build a working system that demonstrates real understanding of:
 
 ## 🏗️ Architecture
 
+### Implemented pipeline
+
 ```
 NETWORK → Packet Capture → Protocol Parser → Flow Builder → Finalized Feature Observations
                                                                        ↓
@@ -41,25 +42,27 @@ NETWORK → Packet Capture → Protocol Parser → Flow Builder → Finalized Fe
                                                     └───────────────┘
                                                             ↓
                                                     ┌───────────────┐
-                                                    │ ML Engine     │
-                                                    │ (Anomaly)     │
+                                                    │ Risk Scoring  │
+                                                    │ (Heuristic)   │
                                                     └───────────────┘
-                                                            ↓
-                                                    ┌───────────────┐
-                                                    │ Threat Engine │
-                                                    │ (Scoring)     │
-                                                    └───────────────┘
-                                                            ↓
-                                                    ┌───────────────┐
-                                                    │ Policy Engine │
-                                                    │ (Response)    │
-                                                    └───────────────┘
-                                                            ↓
-                                              Alert → Block → Isolate
-                                                            ↓
-                                              Security Event Store
-                                                            ↓
-                                            REST API + Real-time Dashboard
+```
+
+### Planned/future architecture
+
+```
+Finalized Feature Observations
+            ↓
+     Deterministic Rules
+            ↓
+       Risk Scoring
+            ↓
+      Policy Engine
+            ↓
+        Response
+            ↓
+    Event Persistence
+            ↓
+   API / Dashboard / ML
 ```
 
 ## 📋 Current Status
@@ -78,7 +81,9 @@ NETWORK → Packet Capture → Protocol Parser → Flow Builder → Finalized Fe
 
 ### 🚧 Phase 3: Rule-Based Detection (IMPLEMENTED)
 
-### 🚧 Phase 4: Threat Scoring + Event Persistence (IMPLEMENTED)
+### 🚧 Phase 4: Heuristic Risk Scoring (IMPLEMENTED)
+
+### 🚧 Phase 4b: Event Persistence (PENDING)
 
 ### 🚧 Phase 5: Controlled Response Engine (PENDING)
 
@@ -127,111 +132,70 @@ python scripts/test_capture.py
 
 ## 📁 Project Structure
 
+### Implemented repository structure
+
 ```
 aegis/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py                          # FastAPI application entry point
+│   ├── api/                            # Present but not yet implemented in this phase
+│   ├── capture/
+│   │   └── packet_capture.py           # Packet capture interface
 │   ├── config/
 │   │   ├── __init__.py
-│   │   ├── settings.py                  # Pydantic settings from env vars
-│   │   └── thresholds.py                # Detection thresholds configuration
-│   ├── capture/
-│   │   ├── __init__.py
-│   │   ├── packet_capture.py            # Packet capture interface
-│   │   └── capture_manager.py           # Capture lifecycle management
-│   ├── protocols/
-│   │   ├── __init__.py
-│   │   └── parser.py                    # Protocol parser (Ethernet/IP/TCP/UDP)
-│   ├── flows/
-│   │   ├── __init__.py
-│   │   ├── flow_builder.py              # Flow aggregation logic
-│   │   ├── flow_key.py                  # Flow key definitions
-│   │   └── time_window.py               # Time window management
-│   ├── features/
-│   │   ├── __init__.py
-│   │   ├── extractor.py                 # Feature extraction from flows
-│   │   └── feature_definitions.py       # Feature catalog
+│   │   ├── settings.py                 # Runtime configuration
+│   │   └── thresholds.py               # Threshold documentation/helper config
 │   ├── detection/
 │   │   ├── __init__.py
-│   │   ├── base_detector.py             # Base detector interface
-│   │   ├── rules/
-│   │   │   ├── __init__.py
-│   │   │   ├── port_scan.py             # Port scan detection
-│   │   │   ├── syn_flood.py             # SYN flood detection
-│   │   │   ├── traffic_anomaly.py      # Traffic spike detection
-│   │   │   └── auth_abuse.py            # Authentication abuse detection
-│   │   └── anomaly/
+│   │   ├── engine.py                   # Deterministic detection engine
+│   │   ├── anomaly/                    # Reserved for future anomaly/ML work
+│   │   └── rules/
 │   │       ├── __init__.py
-│   │       └── isolation_forest.py     # Anomaly detection (Phase 7)
+│   │       ├── base.py                 # Detection rule interface
+│   │       ├── port_scan.py            # Port scan detection
+│   │       └── syn_flood.py            # SYN flood detection
+│   ├── features/
+│   │   ├── __init__.py
+│   │   ├── extractor.py                # Feature extraction / observations
+│   │   └── feature_definitions.py      # Feature catalog
+│   ├── flows/
+│   │   ├── flow_builder.py             # Flow aggregation logic
+│   │   ├── flow_key.py                 # Flow identity strategies
+│   │   └── time_window.py              # Fixed + sliding windows
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── detection.py                # Detection models
+│   │   ├── flow.py                     # Flow / FeatureObservation models
+│   │   ├── packet.py                   # Packet models
+│   │   └── risk.py                     # Risk scoring models
+│   ├── protocols/
+│   │   └── parser.py                   # Protocol parser
+│   ├── response/                       # Present but not yet implemented in this phase
 │   ├── scoring/
 │   │   ├── __init__.py
-│   │   ├── threat_engine.py             # Threat scoring logic
-│   │   └── risk_calculator.py           # Risk score calculation
-│   ├── response/
-│   │   ├── __init__.py
-│   │   ├── policy_engine.py             # Response policy enforcement
-│   │   ├── actions.py                   # Response action implementations
-│   │   └── safety.py                    # SAFE_MODE controls
-│   ├── storage/
-│   │   ├── __init__.py
-│   │   ├── database.py                  # Database connection management
-│   │   ├── models.py                    # SQLAlchemy models
-│   │   └── repositories.py              # Data access layer
-│   ├── api/
-│   │   ├── __init__.py
-│   │   ├── routes/
-│   │   │   ├── __init__.py
-│   │   │   ├── events.py                # Security events API
-│   │   │   ├── metrics.py               # Live metrics API
-│   │   │   └── responses.py             # Response actions API
-│   │   └── websocket/
-│   │       ├── __init__.py
-│   │       └── manager.py               # WebSocket connection manager
-│   └── models/
-│       ├── __init__.py
-│       ├── packet.py                    # Packet data models
-│       ├── flow.py                      # Flow data models
-│       ├── detection.py                 # Detection result models
-│       └── event.py                     # Security event models
-├── tests/
-│   ├── __init__.py
-│   ├── test_protocol_parser.py
-│   ├── test_flow_builder.py
-│   ├── test_feature_extraction.py
-│   ├── test_detection_rules.py
-│   ├── test_scoring.py
-│   ├── test_response_safety.py
-│   └── test_integration.py
-├── data/
-│   ├── raw/                             # Raw pcap files for testing
-│   ├── processed/                       # Processed data
-│   └── models/                          # Trained ML models
-├── scripts/
-│   ├── setup_db.py                      # Database initialization
-│   ├── generate_test_traffic.py         # Test traffic generator
-│   └── test_capture.py                  # Packet capture test
+│   │   └── risk_scorer.py              # Heuristic risk scoring
+│   └── storage/                        # Present but not yet implemented in this phase
 ├── docs/
-│   ├── architecture.md
 │   ├── detection.md
 │   ├── networking.md
-│   ├── ml.md
-│   ├── response.md
-│   ├── testing.md
-│   ├── deployment.md
-│   ├── threat_model.md
-│   └── api.md
-├── frontend/
-│   ├── index.html
-│   ├── static/
-│   │   ├── css/
-│   │   └── js/
-│   └── templates/
-├── .env.example
+│   └── scoring.md
+├── tests/
+│   ├── __init__.py
+│   ├── test_detection_rules.py
+│   ├── test_feature_extraction.py
+│   ├── test_flow_builder.py
+│   ├── test_protocol_parser.py
+│   └── test_scoring.py
 ├── requirements.txt
-├── pyproject.toml
 └── README.md
 ```
+
+### Planned/future areas
+
+The repository also contains placeholder directories such as `app/api/`,
+`app/response/`, `app/storage/`, and `app/detection/anomaly/`, but the
+subsystems described for API, response, persistence, dashboards, and ML remain
+future work.
 
 ## 🔧 Configuration
 
@@ -265,11 +229,6 @@ DATABASE_URL=sqlite:///aegis.db
 python -m pytest tests/ -v
 ```
 
-### Integration Tests
-```bash
-python -m pytest tests/test_integration.py -v
-```
-
 ### Packet Capture Test
 ```bash
 python scripts/test_capture.py
@@ -279,65 +238,45 @@ python scripts/test_capture.py
 
 ### Supported Attack Types
 
+Currently implemented:
+
 1. **Port Scanning / Reconnaissance**
    - Detects unusual destination port access patterns
-   - Analyzes connection rates and unique port counts
+   - Analyzes unique port counts with explainable rule evidence
 
 2. **SYN Flood / Connection Flood**
    - Identifies high TCP SYN activity
    - Detects incomplete connection patterns
 
-3. **Brute-Force Authentication Behavior**
-   - Monitors repeated failed connection attempts
-   - Analyzes authentication failure patterns
+Planned/future:
 
+3. **Brute-Force Authentication Behavior**
 4. **Traffic Anomaly / Volumetric Anomaly**
-   - Detects packet/byte rate spikes
-   - Identifies connection rate anomalies
 
 ### Detection Approach
 
-AEGIS uses a **hybrid detection approach**:
+AEGIS currently uses:
 
 1. **Deterministic Rules**: Explicit, explainable rules with documented thresholds
-2. **Anomaly Detection**: Statistical and ML-based anomaly detection (Phase 7)
-3. **Threat Scoring**: Combines evidence from multiple sources into unified risk score
-4. **Policy-Driven Response**: Configurable response policies based on risk levels
+2. **Heuristic Risk Scoring**: Deterministic additive scoring over detection results
+
+Planned/future phases include anomaly detection, policy, and response.
 
 ## 🔒 Safety Features
 
 ### SAFE_MODE
 
-By default, AEGIS runs in **SAFE_MODE**:
-
-- All blocking actions are simulated
-- Actions are logged but not executed
-- Safe for development and testing
-
-To enable active responses:
-```bash
-SAFE_MODE=false
-```
-
-**Warning**: Only disable SAFE_MODE in controlled lab environments.
-
-### Audit Trail
-
-All actions are logged with:
-- Timestamp
-- Target (IP, port, etc.)
-- Reason
-- Action taken
-- Execution status
+`SAFE_MODE` is present in runtime configuration for future response phases.
+The current implemented packet/flow/feature/detection/scoring pipeline does not
+execute blocking or remediation actions.
 
 ## 📚 Documentation
 
 - [Networking Concepts](docs/networking.md) - Detailed explanation of protocols and networking fundamentals
-- [Architecture](docs/architecture.md) - System architecture and data flow
+
 - [Detection Methods](docs/detection.md) - Deterministic detection engine and rule definitions
 - [Risk Scoring](docs/scoring.md) - Heuristic risk scoring and level mapping
-- [Response System](docs/response.md) - Response policies and safety mechanisms
-- [API Documentation](docs/api.md) - REST API and WebSocket endpoints
+
 
 ## 🎓 Educational Value
 
@@ -361,10 +300,10 @@ AEGIS demonstrates:
    - Testing strategies
    - Documentation practices
 
-4. **Machine Learning Integration**
-   - Feature engineering
-   - Anomaly detection
-   - Model evaluation
+4. **Planned Machine Learning Integration**
+   - Feature engineering foundations
+   - Future anomaly detection work
+   - Model evaluation concepts
    - Limitations and trade-offs
 
 ## 🚨 Limitations
@@ -373,11 +312,14 @@ AEGIS demonstrates:
 - **Scale**: Not designed for enterprise-scale networks
 - **Encryption**: Cannot inspect encrypted payload data
 - **Real-Time**: Processing latency depends on traffic volume
-- **ML Accuracy**: Model performance depends on training data quality
+- **Future ML Work**: ML/anomaly detection is planned but not yet implemented
 
 ## 🔮 Future Work
 
-- Enhanced ML models with ensemble methods
+- Event persistence and historical storage
+- Response/policy engine implementation
+- API and dashboard implementation
+- ML/anomaly detection implementation
 - Support for additional protocols (DNS, HTTP analysis)
 - Geographic IP analysis
 - User behavior analytics
@@ -402,4 +344,4 @@ For questions or issues, please refer to the documentation or create an issue in
 
 ---
 
-**AEGIS** — Protecting networks through intelligent observation and response.
+**AEGIS** — Protecting networks through intelligent observation, detection, and scoring.
