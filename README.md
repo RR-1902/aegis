@@ -85,7 +85,9 @@ Finalized Feature Observations
 
 ### 🚧 Phase 4b: Event Persistence (PENDING)
 
-### 🚧 Phase 5: Controlled Response Engine (PENDING)
+### 🚧 Phase 5: Policy Engine (IMPLEMENTED)
+
+### 🚧 Phase 5b: Response Engine (PENDING)
 
 ### 🚧 Phase 6: Real-Time Dashboard (PENDING)
 
@@ -276,6 +278,7 @@ execute blocking or remediation actions.
 
 - [Detection Methods](docs/detection.md) - Deterministic detection engine and rule definitions
 - [Risk Scoring](docs/scoring.md) - Heuristic risk scoring and level mapping
+- [Policy](docs/policy.md) - Conservative policy decisions and SAFE_MODE behavior
 
 
 ## 🎓 Educational Value
