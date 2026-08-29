@@ -68,6 +68,23 @@ class Settings(BaseSettings):
     threat_score_low: int = 29
     threat_score_medium: int = 59
     threat_score_high: int = 79
+
+    score_port_scan_medium: int = Field(
+        default=25,
+        description="Heuristic score contribution for a MEDIUM port scan detection"
+    )
+    score_port_scan_high: int = Field(
+        default=40,
+        description="Heuristic score contribution for a HIGH port scan detection"
+    )
+    score_syn_flood_medium: int = Field(
+        default=35,
+        description="Heuristic score contribution for a MEDIUM SYN flood detection"
+    )
+    score_syn_flood_high: int = Field(
+        default=55,
+        description="Heuristic score contribution for a HIGH SYN flood detection"
+    )
     
     # Response Policy
     safe_mode: bool = Field(

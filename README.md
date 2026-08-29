@@ -78,7 +78,7 @@ NETWORK → Packet Capture → Protocol Parser → Flow Builder → Finalized Fe
 
 ### 🚧 Phase 3: Rule-Based Detection (IMPLEMENTED)
 
-### 🚧 Phase 4: Threat Scoring + Event Persistence (PENDING)
+### 🚧 Phase 4: Threat Scoring + Event Persistence (IMPLEMENTED)
 
 ### 🚧 Phase 5: Controlled Response Engine (PENDING)
 
@@ -335,6 +335,7 @@ All actions are logged with:
 - [Networking Concepts](docs/networking.md) - Detailed explanation of protocols and networking fundamentals
 - [Architecture](docs/architecture.md) - System architecture and data flow
 - [Detection Methods](docs/detection.md) - Deterministic detection engine and rule definitions
+- [Risk Scoring](docs/scoring.md) - Heuristic risk scoring and level mapping
 - [Response System](docs/response.md) - Response policies and safety mechanisms
 - [API Documentation](docs/api.md) - REST API and WebSocket endpoints
 

@@ -3,6 +3,7 @@
 from app.models.flow import Flow, FlowKey, FlowStatistics, FlowWindow, FeatureObservation
 from app.models.packet import ParsedPacket, Protocol, TransportProtocol, TCPFlags
 from app.models.detection import DetectionSeverity, DetectionResult
+from app.models.risk import RiskLevel, RiskScore
 
 __all__ = [
     "Flow",
@@ -16,4 +17,6 @@ __all__ = [
     "TCPFlags",
     "DetectionSeverity",
     "DetectionResult",
+    "RiskLevel",
+    "RiskScore",
 ]
