@@ -74,7 +74,7 @@ Finalized Feature Observations
 ```
 Security Events
       ↓
-API / Dashboard / WebSocket
+REST API / Dashboard / WebSocket
       ↓
 Reporting / Investigation / ML
 ```
@@ -105,13 +105,15 @@ Reporting / Investigation / ML
 
 ### 🚧 Phase 5c: End-to-End Runtime Pipeline (IMPLEMENTED)
 
-### 🚧 Phase 6: Real-Time Dashboard (PENDING)
+### 🚧 Phase 6: Read-Only REST API (IMPLEMENTED)
 
-### 🚧 Phase 7: ML/Anomaly Detection (PENDING)
+### 🚧 Phase 7: Real-Time Dashboard (PENDING)
 
-### 🚧 Phase 8: AI Investigation Layer (PENDING)
+### 🚧 Phase 8: ML/Anomaly Detection (PENDING)
 
-### 🚧 Phase 9: Testing, Hardening, Documentation (PENDING)
+### 🚧 Phase 9: AI Investigation Layer (PENDING)
+
+### 🚧 Phase 10: Testing, Hardening, Documentation (PENDING)
 
 ## 🚀 Quick Start
 
@@ -303,6 +305,7 @@ execute blocking or remediation actions.
 - [Security Events](docs/security_events.md) - Durable security-event model and SQLite persistence
 - [Pipeline](docs/pipeline.md) - End-to-end runtime orchestration and callback wiring
 - [Validation](docs/validation.md) - Deterministic in-memory traffic validation strategy
+- [API](docs/api.md) - Minimal read-only REST API for persisted security events
 
 
 ## 🎓 Educational Value
