@@ -76,7 +76,7 @@ NETWORK → Packet Capture → Protocol Parser → Flow Builder → Finalized Fe
 
 ### 🚧 Phase 2: Flow Builder + Feature Extraction (IMPLEMENTED)
 
-### 🚧 Phase 3: Rule-Based Detection (PENDING)
+### 🚧 Phase 3: Rule-Based Detection (IMPLEMENTED)
 
 ### 🚧 Phase 4: Threat Scoring + Event Persistence (PENDING)
 
@@ -334,7 +334,7 @@ All actions are logged with:
 
 - [Networking Concepts](docs/networking.md) - Detailed explanation of protocols and networking fundamentals
 - [Architecture](docs/architecture.md) - System architecture and data flow
-- [Detection Methods](docs/detection.md) - Detection algorithms and rule definitions
+- [Detection Methods](docs/detection.md) - Deterministic detection engine and rule definitions
 - [Response System](docs/response.md) - Response policies and safety mechanisms
 - [API Documentation](docs/api.md) - REST API and WebSocket endpoints
 

@@ -17,7 +17,7 @@ class ThresholdConfig:
     """Container for all detection thresholds with documentation."""
     
     # Port Scan Detection
-    port_scan_unique_ports: int = 20
+    port_scan_threshold: int = 20
     """
     Number of unique destination ports from a single source IP within the time window.
     
@@ -132,7 +132,7 @@ class ThresholdConfig:
     def to_dict(self) -> Dict[str, Any]:
         """Convert thresholds to dictionary for serialization."""
         return {
-            "port_scan_unique_ports": self.port_scan_unique_ports,
+            "port_scan_threshold": self.port_scan_threshold,
             "port_scan_time_window": self.port_scan_time_window,
             "syn_rate_threshold": self.syn_rate_threshold,
             "syn_incomplete_ratio": self.syn_incomplete_ratio,
@@ -146,7 +146,7 @@ class ThresholdConfig:
     def from_dict(cls, data: Dict[str, Any]) -> "ThresholdConfig":
         """Create ThresholdConfig from dictionary."""
         return cls(
-            port_scan_unique_ports=data.get("port_scan_unique_ports", 20),
+            port_scan_threshold=data.get("port_scan_threshold", 20),
             port_scan_time_window=data.get("port_scan_time_window", 10),
             syn_rate_threshold=data.get("syn_rate_threshold", 10.0),
             syn_incomplete_ratio=data.get("syn_incomplete_ratio", 0.7),
