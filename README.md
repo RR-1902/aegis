@@ -13,7 +13,7 @@ AEGIS is a defensive security system that currently:
 - **Detects** suspicious patterns using deterministic rules
 - **Scores** combined detection evidence with heuristic risk scoring
 
-Planned future phases include response, event persistence, dashboards, and ML-based analysis.
+Planned future phases include dashboard/API integration, richer response execution, and ML-based analysis.
 
 ## 🎯 Project Goals
 
@@ -47,7 +47,7 @@ NETWORK → Packet Capture → Protocol Parser → Flow Builder → Finalized Fe
                                                     └───────────────┘
 ```
 
-### Planned/future architecture
+### Implemented extended pipeline
 
 ```
 Finalized Feature Observations
@@ -58,11 +58,21 @@ Finalized Feature Observations
             ↓
       Policy Engine
             ↓
-        Response
+   Simulation-Only Response
             ↓
-    Event Persistence
+       Security Events
             ↓
-   API / Dashboard / ML
+           SQLite
+```
+
+### Planned/future architecture
+
+```
+Security Events
+      ↓
+API / Dashboard / WebSocket
+      ↓
+Reporting / Investigation / ML
 ```
 
 ## 📋 Current Status
@@ -83,7 +93,7 @@ Finalized Feature Observations
 
 ### 🚧 Phase 4: Heuristic Risk Scoring (IMPLEMENTED)
 
-### 🚧 Phase 4b: Event Persistence (PENDING)
+### 🚧 Phase 4b: Security Event + SQLite Persistence (IMPLEMENTED)
 
 ### 🚧 Phase 5: Policy Engine (IMPLEMENTED)
 
@@ -169,18 +179,23 @@ aegis/
 │   │   ├── detection.py                # Detection models
 │   │   ├── flow.py                     # Flow / FeatureObservation models
 │   │   ├── packet.py                   # Packet models
-│   │   └── risk.py                     # Risk scoring models
+│   │   ├── response.py                 # Response result models
+│   │   ├── risk.py                     # Risk scoring models
+│   │   └── security_event.py           # Durable security event model
 │   ├── protocols/
 │   │   └── parser.py                   # Protocol parser
-│   ├── response/                       # Present but not yet implemented in this phase
+│   ├── response/                       # Simulation-only response engine
 │   ├── scoring/
 │   │   ├── __init__.py
 │   │   └── risk_scorer.py              # Heuristic risk scoring
-│   └── storage/                        # Present but not yet implemented in this phase
+│   └── storage/                        # SQLite-backed security event persistence
 ├── docs/
 │   ├── detection.md
 │   ├── networking.md
-│   └── scoring.md
+│   ├── policy.md
+│   ├── response.md
+│   ├── scoring.md
+│   └── security_events.md
 ├── tests/
 │   ├── __init__.py
 │   ├── test_detection_rules.py
@@ -194,10 +209,9 @@ aegis/
 
 ### Planned/future areas
 
-The repository also contains placeholder directories such as `app/api/`,
-`app/response/`, `app/storage/`, and `app/detection/anomaly/`, but the
-subsystems described for API, response, persistence, dashboards, and ML remain
-future work.
+The repository still contains placeholder or future-facing areas such as
+`app/api/` and `app/detection/anomaly/`. API delivery, dashboards, WebSocket
+integration, richer response execution, and ML remain future work.
 
 ## 🔧 Configuration
 
@@ -280,6 +294,7 @@ execute blocking or remediation actions.
 - [Risk Scoring](docs/scoring.md) - Heuristic risk scoring and level mapping
 - [Policy](docs/policy.md) - Conservative policy decisions and SAFE_MODE behavior
 - [Response](docs/response.md) - Simulation-only response handling and safety boundary
+- [Security Events](docs/security_events.md) - Durable security-event model and SQLite persistence
 
 
 ## 🎓 Educational Value

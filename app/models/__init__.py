@@ -6,6 +6,7 @@ from app.models.detection import DetectionSeverity, DetectionResult
 from app.models.risk import RiskLevel, RiskScore
 from app.models.policy import PolicyAction, ExecutionMode, ResponseTarget, ResponseDecision
 from app.models.response import ResponseStatus, ResponseResult
+from app.models.security_event import SecurityEvent, SecurityEventStatus
 
 __all__ = [
     "Flow",
@@ -27,4 +28,6 @@ __all__ = [
     "ResponseDecision",
     "ResponseStatus",
     "ResponseResult",
+    "SecurityEvent",
+    "SecurityEventStatus",
 ]
