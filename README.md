@@ -74,7 +74,7 @@ Finalized Feature Observations
 ```
 Security Events
       ↓
-REST API / Dashboard / WebSocket
+REST API / WebSocket
       ↓
 Reporting / Investigation / ML
 ```
@@ -107,7 +107,7 @@ Reporting / Investigation / ML
 
 ### 🚧 Phase 6: Read-Only REST API (IMPLEMENTED)
 
-### 🚧 Phase 7: Real-Time Dashboard (PENDING)
+### 🚧 Phase 7: Web Dashboard (IMPLEMENTED)
 
 ### 🚧 Phase 8: ML/Anomaly Detection (PENDING)
 
@@ -130,7 +130,7 @@ Reporting / Investigation / ML
 cd "C:\Users\admin\Downloads\Computer Networks\aegis"
 ```
 
-2. **Install dependencies**
+2. **Install backend dependencies**
 ```bash
 pip install -r requirements.txt
 ```
@@ -141,13 +141,16 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
-4. **Run tests**
+4. **Run backend tests**
 ```bash
-# Test protocol parser
-python -m pytest tests/test_protocol_parser.py -v
+python -m pytest tests/ -v --tb=short
+```
 
-# Test packet capture (requires Npcap)
-python scripts/test_capture.py
+5. **Run the dashboard**
+```bash
+cd dashboard
+npm install
+npm run dev
 ```
 
 ## 📁 Project Structure
@@ -158,7 +161,7 @@ python scripts/test_capture.py
 aegis/
 ├── app/
 │   ├── __init__.py
-│   ├── api/                            # Present but not yet implemented in this phase
+│   ├── api/                            # Read-only FastAPI REST API for persisted events
 │   ├── capture/
 │   │   └── packet_capture.py           # Packet capture interface
 │   ├── config/
@@ -217,9 +220,8 @@ aegis/
 
 ### Planned/future areas
 
-The repository still contains placeholder or future-facing areas such as
-`app/api/` and `app/detection/anomaly/`. API delivery, dashboards, WebSocket
-integration, richer response execution, and ML remain future work.
+The repository still contains future-facing areas such as
+`app/detection/anomaly/`. WebSocket integration, richer response execution, and ML remain future work.
 
 ## 🔧 Configuration
 
@@ -306,6 +308,7 @@ execute blocking or remediation actions.
 - [Pipeline](docs/pipeline.md) - End-to-end runtime orchestration and callback wiring
 - [Validation](docs/validation.md) - Deterministic in-memory traffic validation strategy
 - [API](docs/api.md) - Minimal read-only REST API for persisted security events
+- [Dashboard](docs/dashboard.md) - Read-only web dashboard for persisted security events
 
 
 ## 🎓 Educational Value
