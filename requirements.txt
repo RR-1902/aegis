@@ -1,0 +1,12 @@
+# Phase 1 dependencies - Packet Capture and Parsing
+
+# Configuration
+pydantic==2.9.2
+pydantic-settings==2.6.0
+python-dotenv==1.0.1
+
+# Networking and packet capture
+scapy==2.6.1
+
+# Testing
+pytest==8.3.3
