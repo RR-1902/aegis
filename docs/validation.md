@@ -43,9 +43,21 @@ Current runtime thresholds under validation:
 
 ### SynFloodRule
 
-- `syn_rate < 10.0` -> no detection
-- `syn_rate == 10.0` and `incomplete_connection_ratio == 0.7` -> `MEDIUM`
-- `syn_rate > 10.0` and `incomplete_connection_ratio > 0.7` -> `HIGH`
+Configured rule conditions:
+
+- trigger requires `syn_rate >= 10.0`
+- and `incomplete_connection_ratio >= 0.7`
+- severity is `MEDIUM` at the exact configured boundary
+- severity becomes `HIGH` only when both values are strictly above their thresholds
+
+Exact packet-based values validated by the automated tests:
+
+- `syn_rate = 9.803921568627452`, `incomplete_connection_ratio = 1.0` -> no detection
+- `syn_rate = 10.0`, `incomplete_connection_ratio = 1.0` -> `SynFloodRule`, `MEDIUM`
+- `syn_rate = 11.594202898550726`, `incomplete_connection_ratio = 1.0` -> `SynFloodRule`, `HIGH`
+
+The automated packet sequences do not claim to generate an exact
+`incomplete_connection_ratio = 0.7` boundary case.
 
 ### Risk levels
 
