@@ -679,6 +679,37 @@ class TestTimeWindowManager:
         assert "total_packets_processed" in stats
 
 
+class DroppingWindowManager:
+    def __init__(self):
+        self.current_window = None
+        self.previous_windows = []
+        self.closed_windows = []
+        self.window_close_callback = None
+        self.total_windows_created = 0
+        self.total_packets_processed = 0
+        self.received = []
+
+    def add_packet(self, packet, flow_key):
+        self.received.append((packet, flow_key))
+        return None
+
+    def cleanup_old_windows(self):
+        return 0
+
+    def get_window_statistics(self):
+        return {
+            "window_seconds": 5,
+            "total_windows_created": 0,
+            "total_packets_processed": 0,
+            "current_window": {},
+            "previous_windows_count": 0,
+            "previous_windows": [],
+        }
+
+    def reset(self):
+        self.received = []
+
+
 class TestFlowBuilder:
     """Test suite for FlowBuilder."""
     
@@ -1142,6 +1173,154 @@ class TestP1Invariant:
         assert total_packets_in_store == 1, (
             "Window manager archival storage still retains all packet data"
         )
+
+
+class TestDroppedPacketRegression:
+    def test_fixed_window_manager_returning_none_is_handled_without_exception(self):
+        builder = FlowBuilder(window_seconds=5)
+        dropping = DroppingWindowManager()
+        builder.window_manager = dropping
+
+        packet = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 0, 1, tzinfo=timezone.utc),
+        )
+
+        assert builder.add_packet(packet) is None
+        assert builder.get_flow_count() == 0
+        assert builder.active_flows == {}
+        assert dropping.previous_windows == []
+        assert dropping.current_window is None
+
+    def test_packet_callback_does_not_receive_none_when_packet_is_dropped(self):
+        builder = FlowBuilder(window_seconds=5)
+        builder.window_manager = DroppingWindowManager()
+        observed = []
+        builder.set_packet_callback(lambda packet, flow: observed.append((packet, flow)))
+
+        packet = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 0, 1, tzinfo=timezone.utc),
+        )
+
+        assert builder.add_packet(packet) is None
+        assert observed == []
+
+    def test_normal_accepted_packet_behavior_remains_unchanged(self):
+        ts = datetime.now(timezone.utc)
+        builder = FlowBuilder(flow_key_strategy="five_tuple", window_seconds=5)
+        packet = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            size=100,
+            timestamp=ts,
+        )
+
+        flow = builder.add_packet(packet)
+        assert flow is not None
+        assert flow.statistics.packet_count == 1
+        assert builder.get_flow_count() == 1
+
+    def test_existing_retained_late_packet_behavior_remains_unchanged(self):
+        manager = TimeWindowManager(window_seconds=5)
+        flow_key = FlowKey(src_ip="10.0.0.1", dst_ip="10.0.0.2", protocol="TCP", src_port=12345, dst_port=80)
+        p1 = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 0, 1, tzinfo=timezone.utc),
+        )
+        p2 = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 0, 7, tzinfo=timezone.utc),
+        )
+        p3 = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 0, 2, tzinfo=timezone.utc),
+        )
+
+        assert manager.add_packet(p1, flow_key) is not None
+        assert manager.add_packet(p2, flow_key) is not None
+        late_flow = manager.add_packet(p3, flow_key)
+        assert late_flow is not None
+        assert len(manager.previous_windows) == 1
+        retained = manager.previous_windows[0]
+        retained_flow = retained.flows[flow_key]
+        assert retained_flow.statistics.packet_count == 2
+        assert retained_flow.statistics.first_packet_time == datetime(2024, 1, 1, 0, 0, 1, tzinfo=timezone.utc)
+        assert retained_flow.statistics.last_packet_time == datetime(2024, 1, 1, 0, 0, 2, tzinfo=timezone.utc)
+
+    def test_existing_removed_window_behavior_remains_unchanged(self):
+        builder = FlowBuilder(window_seconds=5)
+        old = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 0, 1, tzinfo=timezone.utc),
+        )
+        new = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 1, 0, tzinfo=timezone.utc),
+        )
+        too_old = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=datetime(2024, 1, 1, 0, 0, 2, tzinfo=timezone.utc),
+        )
+
+        assert builder.add_packet(old) is not None
+        assert builder.add_packet(new) is not None
+        builder.window_manager.previous_windows = []
+        assert builder.add_packet(too_old) is None
+
+    def test_sliding_window_behavior_remains_unchanged(self):
+        builder = FlowBuilder(use_sliding_windows=True, window_seconds=10)
+        now = datetime.now(timezone.utc)
+        packet = ParsedPacket(
+            src_ip="10.0.0.1",
+            dst_ip="10.0.0.2",
+            transport_protocol=TransportProtocol.TCP,
+            src_port=12345,
+            dst_port=80,
+            timestamp=now,
+        )
+
+        flow = builder.add_packet(packet)
+        assert flow is not None
+        key = builder.flow_key_manager.generate_key(packet)
+        matching = [w for w in builder.window_manager.windows.values() if key in w.flows]
+        assert len(matching) >= 1
+        assert any(f.flow_key == key for w in matching for f in [w.flows[key]])
 
 
 class TestP2SlidingWindow:

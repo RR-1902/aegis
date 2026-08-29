@@ -144,7 +144,9 @@ class FlowBuilder:
                 flow_key=flow_key,
             )
             if isinstance(window_flows, list):
-                flows = window_flows
+                flows = [flow for flow in window_flows if flow is not None]
+            elif window_flows is None:
+                flows = []
             else:
                 flows = [window_flows]
             if not flows:
