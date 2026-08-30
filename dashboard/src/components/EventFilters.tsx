@@ -1,4 +1,5 @@
 import type { EventFilters as EventFiltersType } from '../types/api';
+import { soundFx } from '../utils/soundFx';
 
 type Props = {
   filters: EventFiltersType;
@@ -8,17 +9,25 @@ type Props = {
 };
 
 export default function EventFilters({ filters, onChange, onRefresh, loading }: Props) {
+  const handleRefreshClick = () => {
+    soundFx.playKeyClick();
+    onRefresh();
+  };
+
   return (
-    <section className="panel filters" aria-label="Event filters">
+    <section className="panel filters swiss-box" aria-label="Event filters">
       <div className="filter-row">
         <label>
           <span>Risk level</span>
           <select
             value={filters.risk_level ?? 'all'}
-            onChange={(event) => onChange({
-              ...filters,
-              risk_level: event.target.value === 'all' ? undefined : event.target.value as EventFiltersType['risk_level'],
-            })}
+            onChange={(event) => {
+              soundFx.playKeyClick();
+              onChange({
+                ...filters,
+                risk_level: event.target.value === 'all' ? undefined : event.target.value as EventFiltersType['risk_level'],
+              });
+            }}
           >
             <option value="all">All</option>
             <option value="low">Low</option>
@@ -32,10 +41,13 @@ export default function EventFilters({ filters, onChange, onRefresh, loading }: 
           <span>Lifecycle status</span>
           <select
             value={filters.lifecycle_status ?? 'all'}
-            onChange={(event) => onChange({
-              ...filters,
-              lifecycle_status: event.target.value === 'all' ? undefined : event.target.value as EventFiltersType['lifecycle_status'],
-            })}
+            onChange={(event) => {
+              soundFx.playKeyClick();
+              onChange({
+                ...filters,
+                lifecycle_status: event.target.value === 'all' ? undefined : event.target.value as EventFiltersType['lifecycle_status'],
+              });
+            }}
           >
             <option value="all">All</option>
             <option value="no_action">No Action</option>
@@ -45,9 +57,10 @@ export default function EventFilters({ filters, onChange, onRefresh, loading }: 
         </label>
       </div>
 
-      <button type="button" className="refresh-button" onClick={onRefresh} disabled={loading}>
+      <button type="button" className="refresh-button" onClick={handleRefreshClick} disabled={loading}>
         {loading ? 'Refreshing...' : 'Refresh'}
       </button>
     </section>
   );
 }
+

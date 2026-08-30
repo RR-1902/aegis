@@ -28,7 +28,7 @@ export default function SummaryPanel({ events }: Props) {
   return (
     <section className="summary-grid" aria-label="Security event summary">
       {cards.map(([label, value]) => (
-        <article key={label} className="panel summary-card">
+        <article key={label} className="panel summary-card swiss-box">
           <div className="summary-label">{label}</div>
           <div className="summary-value">{value}</div>
         </article>
@@ -36,3 +36,4 @@ export default function SummaryPanel({ events }: Props) {
     </section>
   );
 }
+

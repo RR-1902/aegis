@@ -109,6 +109,24 @@ class TestHealthEndpoint:
         assert body["detail"]["code"] == "storage_unavailable"
 
 
+class TestCors:
+    @pytest.mark.parametrize("origin", ["http://localhost:5173", "http://127.0.0.1:5173"])
+    def test_allowed_dashboard_origin_receives_allow_origin_header(self, client, origin):
+        response = client(InMemoryApiStore()).get("/health", headers={"Origin": origin})
+
+        assert response.status_code == 200
+        assert response.headers["access-control-allow-origin"] == origin
+
+    def test_disallowed_origin_receives_no_allow_origin_header(self, client):
+        response = client(InMemoryApiStore()).get(
+            "/health",
+            headers={"Origin": "http://malicious.example"},
+        )
+
+        assert response.status_code == 200
+        assert "access-control-allow-origin" not in response.headers
+
+
 class TestEventsEndpoint:
     def test_list_events_empty(self, client):
         response = client(InMemoryApiStore()).get("/events")

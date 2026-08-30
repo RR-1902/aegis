@@ -5,6 +5,10 @@ import SummaryPanel from './components/SummaryPanel';
 import EventFilters from './components/EventFilters';
 import EventsTable from './components/EventsTable';
 import EventDetails from './components/EventDetails';
+import MockAttackToolbar from './components/MockAttackToolbar';
+import TacticalNav from './components/landing/TacticalNav';
+import AegisLandingPage from './components/landing/AegisLandingPage';
+import AegisExplainerPage from './components/docs/AegisExplainerPage';
 import { fetchEvent, fetchEvents, fetchHealth } from './api/events';
 import type { EventFilters as EventFiltersType, HealthResponse, SecurityEvent } from './types/api';
 import { ApiError } from './api/client';
@@ -28,6 +32,9 @@ function mapUiError(error: unknown): string {
 }
 
 export default function App() {
+  const [view, setView] = useState<'landing' | 'console' | 'docs'>('landing');
+  const [scanlinesActive, setScanlinesActive] = useState(true);
+
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [healthLoading, setHealthLoading] = useState(true);
   const [healthError, setHealthError] = useState<string | null>(null);
@@ -106,34 +113,120 @@ export default function App() {
     }
   }, []);
 
+  const handleInjectMockEvent = useCallback((mockEvent: SecurityEvent) => {
+    setEvents((prev) => [mockEvent, ...prev]);
+    setSelectedEventId(mockEvent.event_id);
+    setSelectedEvent(mockEvent);
+    setDetailsError(null);
+    setLastRefresh(new Date().toISOString());
+  }, []);
+
   const filtersApplied = useMemo(() => Boolean(filters.risk_level || filters.lifecycle_status), [filters]);
 
   return (
-    <main className="app-shell">
-      <Header />
-      <StatusBar health={health} healthError={healthError} lastRefresh={lastRefresh} loading={healthLoading} />
-      <SummaryPanel events={events} />
+    <div className="bg-black text-neutral-100 min-h-screen relative font-mono">
+      {/* CRT Scanlines and Vignette Shaders */}
+      {scanlinesActive && (
+        <>
+          <div className="crt-overlay" />
+          <div className="crt-vignette" />
+        </>
+      )}
 
-      <section className="main-grid">
-        <div className="left-column">
-          <EventFilters
-            filters={filters}
-            onChange={(next) => setFilters({ ...next, limit: DEFAULT_LIMIT })}
-            onRefresh={() => void refreshAll()}
-            loading={eventsLoading || healthLoading}
-          />
-          <EventsTable
-            events={events}
-            selectedEventId={selectedEventId}
-            onSelect={(event) => void handleSelectEvent(event)}
-            loading={eventsLoading}
-            error={eventsError}
-            filtersApplied={filtersApplied}
-          />
-        </div>
+      {/* Sticky Tactical HUD Navigation */}
+      <TacticalNav
+        currentView={view}
+        onViewChange={setView}
+        scanlinesActive={scanlinesActive}
+        onToggleScanlines={() => setScanlinesActive((prev) => !prev)}
+      />
 
-        <EventDetails event={selectedEvent} loading={detailsLoading} error={detailsError} />
-      </section>
-    </main>
+      {/* Main Content Area */}
+      {view === 'docs' ? (
+        <AegisExplainerPage
+          onBackToLanding={() => setView('landing')}
+          onLaunchConsole={() => setView('console')}
+        />
+      ) : view === 'landing' ? (
+        <>
+          <AegisLandingPage onLaunchConsole={() => setView('console')} />
+
+          {/* Integrated Live Security Operations Console section at the bottom of Landing Page */}
+          <div id="live-console-grid" className="section-wrapper" style={{ paddingTop: 40 }}>
+            <div className="section-header">
+              <span className="section-index">06 // LIVE OPERATIONS CONSOLE</span>
+              <h2 className="section-heading">PERSISTED SECURITY EVENT LEDGER</h2>
+              <p className="section-subtext">
+                Direct real-time telemetry feed from the AEGIS SQLite event database and FastAPI REST endpoints.
+              </p>
+            </div>
+
+            <main className="app-shell" style={{ padding: 0 }}>
+              <Header />
+              <StatusBar health={health} healthError={healthError} lastRefresh={lastRefresh} loading={healthLoading} />
+              
+              {/* Interactive Mock Attack Injection Toolbar */}
+              <MockAttackToolbar onInjectEvent={handleInjectMockEvent} />
+
+              <SummaryPanel events={events} />
+
+              <section className="main-grid">
+                <div className="left-column">
+                  <EventFilters
+                    filters={filters}
+                    onChange={(next) => setFilters({ ...next, limit: DEFAULT_LIMIT })}
+                    onRefresh={() => void refreshAll()}
+                    loading={eventsLoading || healthLoading}
+                  />
+                  <EventsTable
+                    events={events}
+                    selectedEventId={selectedEventId}
+                    onSelect={(event) => void handleSelectEvent(event)}
+                    loading={eventsLoading}
+                    error={eventsError}
+                    filtersApplied={filtersApplied}
+                  />
+                </div>
+
+                <EventDetails event={selectedEvent} loading={detailsLoading} error={detailsError} />
+              </section>
+            </main>
+          </div>
+        </>
+      ) : (
+        /* Focused Full-Width Operations Console Mode */
+        <main className="app-shell" style={{ marginTop: 24 }}>
+          <Header />
+          <StatusBar health={health} healthError={healthError} lastRefresh={lastRefresh} loading={healthLoading} />
+
+          {/* Interactive Mock Attack Injection Toolbar */}
+          <MockAttackToolbar onInjectEvent={handleInjectMockEvent} />
+
+          <SummaryPanel events={events} />
+
+          <section className="main-grid">
+            <div className="left-column">
+              <EventFilters
+                filters={filters}
+                onChange={(next) => setFilters({ ...next, limit: DEFAULT_LIMIT })}
+                onRefresh={() => void refreshAll()}
+                loading={eventsLoading || healthLoading}
+              />
+              <EventsTable
+                events={events}
+                selectedEventId={selectedEventId}
+                onSelect={(event) => void handleSelectEvent(event)}
+                loading={eventsLoading}
+                error={eventsError}
+                filtersApplied={filtersApplied}
+              />
+            </div>
+
+            <EventDetails event={selectedEvent} loading={detailsLoading} error={detailsError} />
+          </section>
+        </main>
+      )}
+    </div>
   );
 }
+

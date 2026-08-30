@@ -19,19 +19,19 @@ function renderValue(value: unknown): string {
 
 export default function EventDetails({ event, loading, error }: Props) {
   if (loading) {
-    return <aside className="panel details-panel">Loading event details...</aside>;
+    return <aside className="panel details-panel swiss-box">Loading event details...</aside>;
   }
 
   if (error) {
-    return <aside className="panel details-panel error-message">{error}</aside>;
+    return <aside className="panel details-panel swiss-box error-message">{error}</aside>;
   }
 
   if (!event) {
-    return <aside className="panel details-panel empty-state">Select an event to inspect its security analysis.</aside>;
+    return <aside className="panel details-panel swiss-box empty-state">Select an event to inspect its security analysis.</aside>;
   }
 
   return (
-    <aside className="panel details-panel">
+    <aside className="panel details-panel swiss-box">
       <section>
         <h2>Event Identity</h2>
         <dl className="detail-grid">
@@ -52,7 +52,7 @@ export default function EventDetails({ event, loading, error }: Props) {
       <section>
         <h2>Detection</h2>
         {event.detections.map((detection) => (
-          <article key={`${detection.rule_id}-${detection.window_start}`} className="nested-card">
+          <article key={`${detection.rule_id}-${detection.window_start}`} className="nested-card swiss-box">
             <div className="detail-heading-row">
               <h3>{detection.rule_name}</h3>
               <span className={`badge badge-${detection.severity}`}>{titleCase(detection.severity)}</span>
@@ -72,7 +72,7 @@ export default function EventDetails({ event, loading, error }: Props) {
 
       <section>
         <h2>Risk</h2>
-        <article className="nested-card">
+        <article className="nested-card swiss-box">
           <dl className="detail-grid">
             <div><dt>Score</dt><dd>{event.risk.score}</dd></div>
             <div><dt>Level</dt><dd><span className={`badge badge-${event.risk.level}`}>{titleCase(event.risk.level)}</span></dd></div>
@@ -83,7 +83,7 @@ export default function EventDetails({ event, loading, error }: Props) {
 
       <section>
         <h2>Policy</h2>
-        <article className="nested-card">
+        <article className="nested-card swiss-box">
           <dl className="detail-grid">
             <div><dt>Recommended Action</dt><dd>{titleCase(event.policy.recommended_action)}</dd></div>
             <div><dt>Allowed</dt><dd>{event.policy.allowed ? 'Yes' : 'No'}</dd></div>
@@ -98,7 +98,7 @@ export default function EventDetails({ event, loading, error }: Props) {
 
       <section>
         <h2>Response</h2>
-        <article className="nested-card">
+        <article className="nested-card swiss-box">
           <dl className="detail-grid">
             <div><dt>Action</dt><dd>{titleCase(event.response.action)}</dd></div>
             <div><dt>Status</dt><dd><span className={`badge badge-${event.response.status}`}>{titleCase(event.response.status)}</span></dd></div>
@@ -112,3 +112,4 @@ export default function EventDetails({ event, loading, error }: Props) {
     </aside>
   );
 }
+

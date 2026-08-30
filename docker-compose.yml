@@ -1,0 +1,18 @@
+services:
+  aegis-grid:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aegis-cyber-grid
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - SAFE_MODE=true
+    volumes:
+      - aegis-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  aegis-data:

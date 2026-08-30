@@ -1,5 +1,6 @@
 import type { SecurityEvent } from '../types/api';
 import { formatDateTime, formatFlowKey, formatShortId, titleCase } from '../utils/format';
+import { soundFx } from '../utils/soundFx';
 
 type Props = {
   events: SecurityEvent[];
@@ -15,24 +16,29 @@ function badgeClass(value: string): string {
 }
 
 export default function EventsTable({ events, selectedEventId, onSelect, loading, error, filtersApplied }: Props) {
+  const handleEventClick = (event: SecurityEvent) => {
+    soundFx.playKeyClick();
+    onSelect(event);
+  };
+
   if (loading) {
-    return <section className="panel table-panel">Loading events...</section>;
+    return <section className="panel table-panel swiss-box">Loading events...</section>;
   }
 
   if (error) {
-    return <section className="panel table-panel error-message">{error}</section>;
+    return <section className="panel table-panel swiss-box error-message">{error}</section>;
   }
 
   if (events.length === 0) {
     return (
-      <section className="panel table-panel empty-state">
+      <section className="panel table-panel swiss-box empty-state">
         {filtersApplied ? 'No events match the selected filters.' : 'No security events recorded.'}
       </section>
     );
   }
 
   return (
-    <section className="panel table-panel">
+    <section className="panel table-panel swiss-box">
       <table>
         <thead>
           <tr>
@@ -50,11 +56,11 @@ export default function EventsTable({ events, selectedEventId, onSelect, loading
             <tr
               key={event.event_id}
               className={selectedEventId === event.event_id ? 'selected' : ''}
-              onClick={() => onSelect(event)}
+              onClick={() => handleEventClick(event)}
               onKeyDown={(keyboardEvent) => {
                 if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
                   keyboardEvent.preventDefault();
-                  onSelect(event);
+                  handleEventClick(event);
                 }
               }}
               tabIndex={0}
@@ -80,3 +86,4 @@ export default function EventsTable({ events, selectedEventId, onSelect, loading
     </section>
   );
 }
+
