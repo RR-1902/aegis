@@ -176,7 +176,7 @@ export const PipelineScrollSection: React.FC = () => {
           {selectedStage.desc}
         </p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="stage-inspector-grid">
           <div>
             <div style={{ fontSize: 11, textTransform: 'uppercase', color: 'var(--text-dim)', marginBottom: 6 }}>
               LIVE TELEMETRY TELETYPE

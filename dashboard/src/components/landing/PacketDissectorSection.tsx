@@ -242,12 +242,7 @@ export const PacketDissectorSection: React.FC = () => {
         </div>
 
         {/* Oscilloscope Waveform & Live Bitfield Analyzer Card */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
-          gap: 20,
-          marginBottom: 20
-        }}>
+        <div className="dissector-duo-grid" style={{ marginBottom: 20 }}>
           {/* Left: Oscilloscope Stream Visualizer */}
           <div className="swiss-box" style={{ background: '#000000', padding: 12, border: '1px solid var(--border-hairline)' }}>
             <div style={{ position: 'relative', overflow: 'hidden', height: 180, background: '#000000' }}>

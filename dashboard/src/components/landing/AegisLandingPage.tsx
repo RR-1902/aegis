@@ -49,11 +49,7 @@ export const AegisLandingPage: React.FC<Props> = ({ onLaunchConsole }) => {
           </p>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 0.8fr)',
-          gap: 20
-        }}>
+        <div className="radar-duo-grid">
           {/* Interactive Live 3D Canvas Radar */}
           <CyberRadarCanvas />
 

@@ -142,7 +142,7 @@ export const AegisExplainerPage: React.FC<Props> = ({ onBackToLanding, onLaunchC
 
             {/* Core Concepts */}
             <h3 style={{ color: '#ffffff', fontSize: '1.3rem', marginBottom: 12 }}>Core Networking Primitives in IDRS</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div className="stage-inspector-grid" style={{ gap: 16 }}>
               <div style={{ padding: 16, background: '#070a0e', border: '1px solid var(--border-hairline)' }}>
                 <strong style={{ color: 'var(--terminal-green)', fontSize: 13 }}>• Packet-Level vs. Flow-Level Inspection</strong>
                 <p style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 4, lineHeight: 1.6 }}>

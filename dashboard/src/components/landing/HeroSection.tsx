@@ -207,15 +207,7 @@ export const HeroSection: React.FC<Props> = ({ onLaunchConsole, onExploreSimulat
 
         {/* Hero Terminal & 3D Visual Duo Grid with 3D Tilt & Cursor Spotlight */}
         <div 
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 0.8fr)',
-            gap: 20,
-            maxWidth: 1280,
-            width: '100%',
-            margin: '0 auto',
-            textAlign: 'left'
-          }}
+          className="hero-duo-grid"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
         >
