@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Void Black Background Rounded Square -->
+  <rect width="64" height="64" rx="14" fill="#000000" />
+  <rect width="64" height="64" rx="14" stroke="#22c55e" stroke-width="2" stroke-opacity="0.4" />
+  
+  <!-- Corner Crosshairs -->
+  <path d="M 8 16 L 8 8 L 16 8" stroke="#22c55e" stroke-width="2" stroke-linecap="round" />
+  <path d="M 48 8 L 56 8 L 56 16" stroke="#22c55e" stroke-width="2" stroke-linecap="round" />
+  <path d="M 8 48 L 8 56 L 16 56" stroke="#22c55e" stroke-width="2" stroke-linecap="round" />
+  <path d="M 48 56 L 56 56 L 56 48" stroke="#22c55e" stroke-width="2" stroke-linecap="round" />
+
+  <!-- AEGIS Cyber Defense Shield / Hexagon -->
+  <path d="M 32 12 L 48 20 L 48 36 C 48 46 32 52 32 52 C 32 52 16 46 16 36 L 16 20 Z" 
+        fill="#050a06" 
+        stroke="#22c55e" 
+        stroke-width="2.5" 
+        stroke-linejoin="round" />
+
+  <!-- Inner Cyan Radar Grid Core -->
+  <path d="M 32 20 L 42 25 L 42 35 C 42 41 32 45 32 45 C 32 45 22 41 22 35 L 22 25 Z" 
+        fill="rgba(6, 182, 212, 0.15)" 
+        stroke="#06b6d4" 
+        stroke-width="1.5" 
+        stroke-linejoin="round" />
+
+  <!-- Central Glowing Sensor Node -->
+  <circle cx="32" cy="31" r="3.5" fill="#22c55e" />
+  <circle cx="32" cy="31" r="6" stroke="#22c55e" stroke-width="1" stroke-dasharray="2 2" />
+  <line x1="32" y1="21" x2="32" y2="41" stroke="#06b6d4" stroke-width="1" stroke-opacity="0.6" />
+  <line x1="22" y1="31" x2="42" y2="31" stroke="#06b6d4" stroke-width="1" stroke-opacity="0.6" />
+</svg>
