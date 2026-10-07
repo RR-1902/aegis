@@ -109,6 +109,15 @@ Reporting / Investigation / ML
 
 ### 🚧 Phase 7: Web Dashboard (IMPLEMENTED)
 
+A narrative overview (a scroll-driven walk through one real attack, the rules, a rule lab and a
+glossary) and an event ledger console. See [docs/dashboard.md](docs/dashboard.md).
+
+### 🚧 Phase 7b: Attack Simulations (IMPLEMENTED)
+
+`POST /simulations` runs synthetic, in-memory attack traffic (SYN flood, port scan, fast scan,
+slow scan, benign DNS) through the real pipeline and stores whatever the engine decides. Nothing is
+sent on a network. See [docs/api.md](docs/api.md).
+
 ### 🚧 Phase 8: ML/Anomaly Detection (PENDING)
 
 ### 🚧 Phase 9: AI Investigation Layer (PENDING)
@@ -119,7 +128,8 @@ Reporting / Investigation / ML
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.9+ (tested on 3.11 and 3.12)
+- Node.js 18+ for the web interface
 - Administrator/root privileges (for packet capture)
 - Npcap (Windows) or libpcap (Linux) for packet capture
 
@@ -146,11 +156,26 @@ cp .env.example .env
 python -m pytest tests/ -v --tb=short
 ```
 
-5. **Run the dashboard**
+5. **Seed demo events produced by the real engine** (optional)
+```bash
+python -m scripts.seed_demo_attacks
+```
+
+6. **Start the API**
+```bash
+uvicorn app.api.main:app --port 8000
+```
+
+7. **Run the web interface**
 ```bash
 cd dashboard
 npm install
 npm run dev
+```
+
+8. **Capture live traffic** (needs administrator rights and Npcap or libpcap)
+```bash
+python -m app.main
 ```
 
 ## 📁 Project Structure
@@ -252,7 +277,8 @@ DATABASE_URL=sqlite:///aegis.db
 
 ### Unit Tests
 ```bash
-python -m pytest tests/ -v
+python -m pytest tests/ -v      # 280 backend tests
+cd dashboard && npm run test     # 30 web interface tests
 ```
 
 ### Packet Capture Test
