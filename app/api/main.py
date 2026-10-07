@@ -1,4 +1,4 @@
-"""Read-only REST API for persisted AEGIS security events."""
+"""REST API for persisted AEGIS security events, plus the attack simulation endpoint."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.routes.events import router as events_router
 from app.api.routes.health import router as health_router
+from app.api.routes.simulations import router as simulations_router
 from app.config.settings import settings
 
 
@@ -22,12 +23,13 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
 app.include_router(health_router)
 app.include_router(events_router)
+app.include_router(simulations_router)
 
 # Mount frontend static distribution if built
 dist_dir = Path(__file__).resolve().parent.parent.parent / "dashboard" / "dist"
