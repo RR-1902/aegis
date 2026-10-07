@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AEGIS Project Report</title>
+<style>
+  @font-face { font-family: 'Mona Sans'; src: url('fonts/mona-sans-latin-standard-normal.woff2') format('woff2'); font-weight: 200 900; font-stretch: 75% 125%; }
+  @font-face { font-family: 'Hubot Sans'; src: url('fonts/hubot-sans-latin-standard-normal.woff2') format('woff2'); font-weight: 200 900; font-stretch: 75% 125%; }
+  @font-face { font-family: 'Geist Mono'; src: url('fonts/geist-mono-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+
+  @page { size: A4; margin: 20mm 19mm 22mm; }
+
+  :root {
+    --ink: #142033;
+    --ink-2: #44506a;
+    --muted: #6b7690;
+    --rule: #d9dfeb;
+    --tint: #f3f6fb;
+    --accent: #2f5bd8;
+    --critical: #d6264f;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: var(--ink); font: 400 10.4pt/1.6 'Mona Sans', sans-serif; }
+
+  h1, h2, h3 { font-family: 'Hubot Sans', sans-serif; font-weight: 720; letter-spacing: -0.01em; color: var(--ink); }
+  h2 { font-size: 18pt; font-stretch: 106%; margin: 0 0 4mm; padding-top: 1mm; break-after: avoid; }
+  h2 .num { color: var(--accent); margin-right: 3mm; }
+  h3 { font-size: 11.5pt; margin: 6mm 0 2mm; break-after: avoid; }
+  p { margin: 0 0 3mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+  li { margin-bottom: 1.2mm; }
+  code, .mono { font-family: 'Geist Mono', monospace; font-size: 0.86em; }
+  b, strong { font-weight: 650; }
+  a { color: var(--accent); text-decoration: none; }
+
+  .chapter { break-before: page; }
+  .lead { font-size: 11pt; color: var(--ink-2); margin-bottom: 5mm; }
+
+  table { width: 100%; border-collapse: collapse; margin: 1mm 0 5mm; font-size: 9.2pt; break-inside: avoid; }
+  th, td { text-align: left; vertical-align: top; padding: 2mm 2.5mm; border-bottom: 0.6pt solid var(--rule); }
+  th { background: var(--tint); font-weight: 650; color: var(--ink); border-bottom: 0.8pt solid #c4ccdc; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+
+  figure { margin: 2mm 0 6mm; break-inside: avoid; }
+  figure img { display: block; width: 86%; margin: 0 auto; border-radius: 2.5mm; border: 0.6pt solid var(--rule); }
+  figure.shot figcaption { width: 86%; margin-left: auto; margin-right: auto; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { margin-top: 2mm; font-size: 8.8pt; color: var(--muted); }
+  figcaption b { color: var(--ink-2); font-weight: 650; }
+
+  .note { font-size: 8.8pt; color: var(--muted); }
+  .facts { display: grid; grid-template-columns: repeat(5, 1fr); border: 0.6pt solid var(--rule); border-radius: 2.5mm; margin: 4mm 0 7mm; overflow: hidden; }
+  .facts div { padding: 3.5mm 3mm; border-left: 0.6pt solid var(--rule); }
+  .facts div:first-child { border-left: 0; }
+  .facts b { display: block; font-family: 'Hubot Sans', sans-serif; font-size: 19pt; font-weight: 740; line-height: 1.1; color: var(--accent); }
+  .facts span { font-size: 8.4pt; color: var(--ink-2); line-height: 1.35; display: block; margin-top: 1mm; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; break-inside: avoid; }
+  .tag { display: inline-block; padding: 0.3mm 1.6mm; border-radius: 1mm; font-size: 8pt; font-weight: 650; border: 0.6pt solid; }
+  .low { color: #0f8a80; } .medium { color: #a8740a; } .high { color: #c4561c; } .critical { color: var(--critical); }
+
+  /* Cover */
+  .cover { height: 250mm; display: flex; flex-direction: column; }
+  .cover .brand { display: flex; align-items: center; gap: 4mm; margin-top: 18mm; }
+  .cover .brand span { font-family: 'Hubot Sans', sans-serif; font-weight: 760; font-stretch: 125%; letter-spacing: 0.16em; font-size: 15pt; }
+  .cover h1 { font-size: 30pt; line-height: 1.08; font-stretch: 104%; margin: 22mm 0 5mm; letter-spacing: -0.025em; }
+  .cover h1 em { font-style: normal; color: var(--accent); }
+  .cover .sub { font-size: 12.5pt; color: var(--ink-2); max-width: 140mm; margin: 0; }
+  .cover .kind { margin-top: 10mm; font-size: 10pt; font-weight: 650; color: var(--accent); }
+  .cover table { margin-top: auto; font-size: 10pt; break-inside: avoid; }
+  .cover td { padding: 3mm 0; border-bottom: 0.6pt solid var(--rule); }
+  .cover td:first-child { width: 48mm; color: var(--muted); }
+  .blank { color: #9aa3b8; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div class="brand">
+    <svg width="44" height="44" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="12" y1="6" x2="54" y2="60" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#A9CBFF"/><stop offset=".55" stop-color="#5B8DFF"/><stop offset="1" stop-color="#2A4FE0"/></linearGradient></defs><path d="M32 4 54 12.4V30c0 14-9.4 24.4-22 29.6C19.4 54.4 10 44 10 30V12.4L32 4Z" fill="url(#g)"/><path d="M32 4v55.6C19.4 54.4 10 44 10 30V12.4L32 4Z" fill="#04060B" fill-opacity=".18"/><path d="M22.5 45 32 18.5 41.5 45" fill="none" stroke="#050913" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26.3 35.4h11.4" stroke="#050913" stroke-width="4.2" stroke-linecap="round"/></svg>
+    <span>AEGIS</span>
+  </div>
+  <h1>Explainable Network Intrusion<br><em>Detection and Response</em></h1>
+  <p class="sub">A system that detects SYN floods and port scans with transparent rules, and records the evidence, risk score, decision and response behind every alert.</p>
+  <p class="kind">Project report</p>
+  <table>
+    <tr><td>Submitted by</td><td class="blank">[Student names]</td></tr>
+    <tr><td>Register numbers</td><td class="blank">[Register numbers]</td></tr>
+    <tr><td>Department</td><td class="blank">[Department]</td></tr>
+    <tr><td>Institution</td><td class="blank">[College or university]</td></tr>
+    <tr><td>Project guide</td><td class="blank">[Guide name and designation]</td></tr>
+    <tr><td>Academic year</td><td class="blank">[Year]</td></tr>
+    <tr><td>Source code</td><td><a href="https://github.com/RR-1902/aegis">github.com/RR-1902/aegis</a></td></tr>
+  </table>
+</section>
+
+<!-- ============ ABSTRACT ============ -->
+<section class="chapter">
+  <h2>Abstract</h2>
+  <p>AEGIS is a network intrusion detection and response system built so that every alert can be checked by a person. It captures packets, groups them into flows measured over five-second windows, and tests each window against two explicit rules: one for SYN floods and one for port scans.</p>
+  <p>Each rule that fires adds fixed points to a risk score from 0 to 100. A conservative policy engine turns the resulting risk level into a recommended action, and a simulation-only response engine validates it without ever touching the host or its firewall. The whole chain is stored as one immutable security event, identified by a SHA-256 hash of what was observed, and served through a REST API.</p>
+  <p>A web interface explains the system step by step. It follows one real attack through all ten stages, lets the reader try the rules, runs attack simulations through the real pipeline, and shows the full decision chain of every stored event.</p>
+
+  <div class="facts">
+    <div><b>10</b><span>pipeline stages, one module each</span></div>
+    <div><b>28</b><span>features measured per flow window</span></div>
+    <div><b>2</b><span>detection rules with fixed thresholds</span></div>
+    <div><b>310</b><span>automated tests, backend and interface</span></div>
+    <div><b>0</b><span>firewall commands ever executed</span></div>
+  </div>
+
+  <h2><span class="num">1</span>Introduction</h2>
+  <p class="lead">Most detectors report a verdict without its reasons. AEGIS is built to report both.</p>
+  <p>Intrusion detection systems watch network traffic and raise alerts. Many modern systems rely on statistical or machine-learning models whose outputs are hard to explain: an analyst sees a score, not the measurement behind it. For teaching, auditing and incident review, a reviewer needs to know which value crossed which limit and what the system did next.</p>
+  <h3>Objectives</h3>
+  <ol>
+    <li>Capture and parse live traffic at the Ethernet, network and transport layers.</li>
+    <li>Detect SYN floods and port scans with explicit, configurable thresholds, keeping the evidence.</li>
+    <li>Turn detections into a transparent risk score and a proportionate, safe response.</li>
+    <li>Store each decision chain as an immutable, verifiable record and serve it over an API.</li>
+    <li>Explain the whole system, and every stored event, in a web interface.</li>
+  </ol>
+  <p class="note">The name comes from Greek myth, where the aegis was the shield of Zeus and Athena. To act under someone's aegis is to act under their protection.</p>
+</section>
+
+<!-- ============ OVERVIEW ============ -->
+<section class="chapter">
+  <h2><span class="num">2</span>How AEGIS works</h2>
+  <p class="lead">Packets pass through ten small stages. Each stage has one job, and each records why it did what it did.</p>
+
+  <figure>
+    <svg viewBox="0 0 660 214" font-family="Mona Sans" role="img" aria-label="AEGIS detection pipeline">
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8792ab"/></marker></defs>
+      <g fill="none" stroke="#8792ab" stroke-width="1.2">
+        <path d="M116 46h20M252 46h20M388 46h20M524 46h20" marker-end="url(#a)"/>
+        <path d="M602 78v32H58v28" marker-end="url(#a)"/>
+        <path d="M116 170h20M252 170h20M388 170h20M524 170h20" marker-end="url(#a)"/>
+      </g>
+      <g stroke-width="1.1">
+        <rect x="0" y="14" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="136" y="14" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="272" y="14" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="408" y="14" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="544" y="14" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="0" y="138" width="116" height="64" rx="7" fill="#eef3ff" stroke="#2f5bd8"/>
+        <rect x="136" y="138" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="272" y="138" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="408" y="138" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="544" y="138" width="116" height="64" rx="7" fill="#fff" stroke="#c4ccdc"/>
+      </g>
+      <g font-size="10.5" fill="#142033">
+        <text x="12" y="38" font-weight="700"><tspan fill="#2f5bd8">1</tspan>  Capture</text><text x="12" y="56" font-size="8.6" fill="#44506a">Scapy, BPF filter</text>
+        <text x="148" y="38" font-weight="700"><tspan fill="#2f5bd8">2</tspan>  Parse</text><text x="148" y="56" font-size="8.6" fill="#44506a">L2 to L4 headers only</text>
+        <text x="284" y="38" font-weight="700"><tspan fill="#2f5bd8">3</tspan>  Group</text><text x="284" y="56" font-size="8.6" fill="#44506a">Flows by flow key</text>
+        <text x="420" y="38" font-weight="700"><tspan fill="#2f5bd8">4</tspan>  Window</text><text x="420" y="56" font-size="8.6" fill="#44506a">5 s, aligned to clock</text>
+        <text x="556" y="38" font-weight="700"><tspan fill="#2f5bd8">5</tspan>  Measure</text><text x="556" y="56" font-size="8.6" fill="#44506a">28 features</text>
+        <text x="12" y="162" font-weight="700"><tspan fill="#2f5bd8">6</tspan>  Detect</text><text x="12" y="180" font-size="8.6" fill="#44506a">2 rules, with evidence</text>
+        <text x="148" y="162" font-weight="700"><tspan fill="#2f5bd8">7</tspan>  Score</text><text x="148" y="180" font-size="8.6" fill="#44506a">0 to 100, four levels</text>
+        <text x="284" y="162" font-weight="700"><tspan fill="#2f5bd8">8</tspan>  Decide</text><text x="284" y="180" font-size="8.6" fill="#44506a">Conservative policy</text>
+        <text x="420" y="162" font-weight="700"><tspan fill="#2f5bd8">9</tspan>  Respond</text><text x="420" y="180" font-size="8.6" fill="#44506a">Validated, simulated</text>
+        <text x="556" y="162" font-weight="700"><tspan fill="#2f5bd8">10</tspan>  Record</text><text x="556" y="180" font-size="8.6" fill="#44506a">SQLite, SHA-256 ID</text>
+      </g>
+    </svg>
+    <figcaption><b>Figure 1.</b> The detection pipeline. A window in which no rule fires stops at stage 6 and nothing is stored.</figcaption>
+  </figure>
+
+  <h3>Components</h3>
+  <p>The detection runtime and the API run as separate processes and share only the SQLite file, so nothing on the web side can change what the engine recorded. The one write the API offers, an attack simulation, still passes through the full pipeline.</p>
+
+  <figure>
+    <svg viewBox="0 0 660 118" font-family="Mona Sans" role="img" aria-label="AEGIS components">
+      <defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8792ab"/></marker></defs>
+      <g stroke-width="1.1">
+        <rect x="0" y="32" width="146" height="70" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="171" y="32" width="146" height="70" rx="7" fill="#eef3ff" stroke="#2f5bd8"/>
+        <rect x="342" y="32" width="146" height="70" rx="7" fill="#fff" stroke="#c4ccdc"/>
+        <rect x="513" y="32" width="146" height="70" rx="7" fill="#fff" stroke="#c4ccdc"/>
+      </g>
+      <g fill="none" stroke="#8792ab" stroke-width="1.2">
+        <path d="M146 67h23" marker-end="url(#b)"/>
+        <path d="M342 67h-23" marker-end="url(#b)"/>
+        <path d="M513 67h-23" marker-end="url(#b)"/>
+      </g>
+      <g font-size="8.4" fill="#6b7690" text-anchor="middle">
+        <text x="158" y="22">writes</text>
+        <text x="330" y="22">reads, simulates</text>
+        <text x="501" y="22">HTTPS, JSON</text>
+      </g>
+      <g font-size="10.5" fill="#142033">
+        <text x="12" y="56" font-weight="700">Detection runtime</text><text x="12" y="73" font-size="8.4" fill="#44506a" font-family="Geist Mono">python -m app.main</text><text x="12" y="89" font-size="8.6" fill="#44506a">Capture to response</text>
+        <text x="183" y="56" font-weight="700">Event ledger</text><text x="183" y="73" font-size="8.4" fill="#44506a" font-family="Geist Mono">aegis.db</text><text x="183" y="89" font-size="8.6" fill="#44506a">SQLite, immutable events</text>
+        <text x="354" y="56" font-weight="700">REST API</text><text x="354" y="73" font-size="8.4" fill="#44506a" font-family="Geist Mono">FastAPI</text><text x="354" y="89" font-size="8.6" fill="#44506a">Read events, run simulations</text>
+        <text x="525" y="56" font-weight="700">Web interface</text><text x="525" y="73" font-size="8.4" fill="#44506a" font-family="Geist Mono">React, TypeScript</text><text x="525" y="89" font-size="8.6" fill="#44506a">Story, lab, console</text>
+      </g>
+    </svg>
+    <figcaption><b>Figure 2.</b> Processes and data flow.</figcaption>
+  </figure>
+
+  <h3>The security event</h3>
+  <p>Each alert is stored once as a security event: the flow, the window, every detection with its evidence, the risk score, the policy decision and the response. Its ID is <code>security-event:</code> followed by the SHA-256 hash of the flow key and window, so the same traffic always produces the same ID. An identical event saved twice is ignored, and a different event under an existing ID is refused.</p>
+</section>
+
+<!-- ============ RULES ============ -->
+<section class="chapter">
+  <h2><span class="num">3</span>Detection, scoring and response</h2>
+  <p class="lead">Two rules, fixed points and a conservative policy. Every value below is configuration, not learned.</p>
+
+  <h3>Detection rules</h3>
+  <table>
+    <tr><th>Rule</th><th>Fires when, in one window</th><th>Medium severity</th><th>High severity</th></tr>
+    <tr><td><b>SYN Flood</b></td><td><code>syn_rate</code> ≥ 10 per second and <code>incomplete_connection_ratio</code> ≥ 0.7</td><td>A value sits exactly on its threshold: <b>+35</b></td><td>Both values above: <b>+55</b></td></tr>
+    <tr><td><b>Port Scan</b></td><td><code>unique_destination_ports</code> ≥ 20</td><td>Exactly 20 ports: <b>+25</b></td><td>More than 20: <b>+40</b></td></tr>
+  </table>
+  <p>Each detection keeps its evidence: the feature values used, the thresholds applied and every comparison with its result, plus a one-sentence explanation.</p>
+
+  <h3>From score to action</h3>
+  <table>
+    <tr><th>Risk level</th><th class="num">Score</th><th>Policy decision</th><th>Response</th></tr>
+    <tr><td><span class="tag low">Low</span></td><td class="num">0–29</td><td>Log only</td><td>No action</td></tr>
+    <tr><td><span class="tag medium">Medium</span></td><td class="num">30–59</td><td>Alert only</td><td>No action</td></tr>
+    <tr><td><span class="tag high">High</span></td><td class="num">60–79</td><td rowspan="2">Block the source, only if the evidence names an observed source; otherwise alert only</td><td rowspan="2">Simulated while SAFE_MODE is on; rejected if it is off, because no executor exists</td></tr>
+    <tr><td><span class="tag critical">Critical</span></td><td class="num">80–100</td></tr>
+  </table>
+  <p>Points from every rule that fired on the same window are added and capped at 100. The policy never infers an attacker from a flow key, because a flow key can be spoofed. The response engine runs six validation checks before it records any outcome, and no code path runs a system or firewall command.</p>
+
+  <h2 style="margin-top:9mm"><span class="num">4</span>Implementation</h2>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Role</th></tr>
+    <tr><td>Engine</td><td>Python 3.11, Scapy 2.6, Pydantic Settings</td><td>Capture, parsing, flows, features, rules, scoring, policy, response</td></tr>
+    <tr><td>Storage and API</td><td>SQLite, FastAPI</td><td>Immutable event ledger; <code>/health</code>, <code>/events</code>, <code>/simulations</code></td></tr>
+    <tr><td>Simulation</td><td>In-memory Scapy packets</td><td>Five attack scenarios run through the real pipeline; nothing sent on a network</td></tr>
+    <tr><td>Web interface</td><td>React 18, TypeScript, Vite, GSAP, Lenis</td><td>Narrative overview, rule lab, simulations, event console</td></tr>
+    <tr><td>Testing</td><td>pytest, Vitest, Playwright</td><td>Unit, integration, end-to-end and browser checks</td></tr>
+  </table>
+  <ul>
+    <li><b>Pure components.</b> Rules, scorer, policy and response engines are stateless and side-effect free, so each is tested on its own.</li>
+    <li><b>Fault isolation.</b> A failure in any stage drops only the observation being processed; capture keeps running.</li>
+    <li><b>Honest simulations.</b> Simulated traffic uses RFC 5737 documentation addresses, which never occur on real networks, so the interface tags those events as synthetic.</li>
+  </ul>
+</section>
+
+<!-- ============ INTERFACE ============ -->
+<section class="chapter">
+  <h2><span class="num">5</span>Web interface</h2>
+  <p class="lead">The interface explains AEGIS step by step and shows only real data: every score on screen comes from the API or from the engine's own rules.</p>
+  <figure class="shot">
+    <img src="images/01-hero.jpg" alt="AEGIS overview page, opening screen">
+    <figcaption><b>Figure 3.</b> Overview. The opening screen states what AEGIS does; the instrument and packet stream are illustrative.</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="images/02-story-detect.jpg" alt="Story section at the Detect stage">
+    <figcaption><b>Figure 4.</b> "Follow one attack through AEGIS". Scrolling walks through all ten stages; here both rules fire on a fast scan of 24 ports. Underlined terms open a definition.</figcaption>
+  </figure>
+
+  <figure class="shot">
+    <img src="images/03-rule-lab.jpg" alt="Rule lab">
+    <figcaption><b>Figure 5.</b> Rule lab. Feature values set by the reader run through a browser copy of the rules, scorer and policy, which is tested against the Python engine's numbers.</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="images/04-simulate.jpg" alt="Attack simulator">
+    <figcaption><b>Figure 6.</b> Attack simulator. Each card asks the API to run synthetic packets through the real pipeline; the result shows what the engine stored.</figcaption>
+  </figure>
+
+  <figure class="shot">
+    <img src="images/06-console.jpg" alt="Event ledger console">
+    <figcaption><b>Figure 7.</b> Event ledger. Each stored event opens into its full chain: flow window, detections with threshold checks, risk, policy and response.</figcaption>
+  </figure>
+  <p>The interface is keyboard accessible, keeps filters and the selected event in the URL, and switches off all motion for readers who prefer reduced motion. Only transform and opacity animate.</p>
+</section>
+
+<!-- ============ TESTING ============ -->
+<section>
+  <h2 style="margin-top:8mm"><span class="num">6</span>Testing and results</h2>
+  <p class="lead">307 of 310 automated tests pass. The three failures are one known configuration mismatch, explained below.</p>
+  <table>
+    <tr><th>Suite</th><th class="num">Tests</th><th>Result</th></tr>
+    <tr><td>Backend (pytest, 12 files): parser, flows, features, rules, scoring, policy, response safety, events, pipeline, API, simulations, end-to-end validation</td><td class="num">280</td><td>277 passed, 3 failed</td></tr>
+    <tr><td>Web interface (Vitest, 3 files): rule engine against Python's numbers, API client, pages</td><td class="num">30</td><td>30 passed</td></tr>
+  </table>
+  <p class="note">The three failing tests expect the API to allow only local origins, while the API allows any origin so that the hosted interface can reach it. Reconciling the two is listed as future work.</p>
+
+  <h3>Engine output for each simulated attack</h3>
+  <table>
+    <tr><th>Scenario</th><th>Traffic</th><th>Rules fired</th><th class="num">Score</th><th>Level</th><th>Decision</th></tr>
+    <tr><td>Slow scan</td><td>20 ports in 3.8 s</td><td>Port Scan, medium</td><td class="num">25</td><td><span class="tag low">Low</span></td><td>Log only</td></tr>
+    <tr><td>Port scan</td><td>32 ports in 4.65 s</td><td>Port Scan, high</td><td class="num">40</td><td><span class="tag medium">Medium</span></td><td>Alert only</td></tr>
+    <tr><td>SYN flood</td><td>60 SYN packets in 1.5 s</td><td>SYN Flood, high</td><td class="num">55</td><td><span class="tag medium">Medium</span></td><td>Alert only</td></tr>
+    <tr><td>Fast scan</td><td>24 ports in 0.8 s</td><td>Port Scan and SYN Flood, both high</td><td class="num">95</td><td><span class="tag critical">Critical</span></td><td>Alert only</td></tr>
+    <tr><td>Normal DNS</td><td>5 queries</td><td>None</td><td class="num">–</td><td>–</td><td>Not stored</td></tr>
+  </table>
+  <p>Every scenario produced the expected verdict, and benign traffic produced none. The critical fast scan is not blocked, because no rule yet records an observed source; the policy correctly refuses to guess.</p>
+
+  <h3>Interface performance</h3>
+  <p>Measured on the production build with the CPU slowed fourfold: scrolling the whole overview gives a median frame time of 16.7 ms (60 frames per second), a 95th percentile of 50 ms, and 3 of 819 frames over 100 ms.</p>
+
+  <h3>Running AEGIS</h3>
+  <table>
+    <tr><th>Task</th><th>Command</th></tr>
+    <tr><td>Install and test the backend</td><td><code>pip install -r requirements.txt</code>, then <code>python -m pytest tests/</code></td></tr>
+    <tr><td>Seed demo events from the real engine</td><td><code>python -m scripts.seed_demo_attacks</code></td></tr>
+    <tr><td>Start the API</td><td><code>uvicorn app.api.main:app --port 8000</code></td></tr>
+    <tr><td>Start the web interface</td><td><code>cd dashboard</code>, <code>npm install</code>, <code>npm run dev</code></td></tr>
+    <tr><td>Capture live traffic (admin rights, Npcap or libpcap)</td><td><code>python -m app.main</code></td></tr>
+  </table>
+</section>
+
+<!-- ============ LIMITS ============ -->
+<section class="chapter">
+  <h2><span class="num">7</span>Limitations and future work</h2>
+  <div class="two">
+    <div>
+      <h3>Current limitations</h3>
+      <ul>
+        <li>Two attack types only: SYN floods and port scans.</li>
+        <li>The default five-tuple flow key splits a scan into one flow per port, so port scans need the three-tuple key.</li>
+        <li>Rules do not yet record an observed source, so live traffic never leads to a block, and all responses are simulated.</li>
+        <li>Alerts arrive late: a window is reported about 50 seconds after it ends under steady traffic, later when traffic is sparse.</li>
+        <li>Completed connections are approximated by FIN packets, so short normal connections can look incomplete.</li>
+        <li>The hosted demo serves stored and simulated events; it does not capture traffic.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Future work</h3>
+      <ul>
+        <li>Attach an observed source to detections, then add a guarded firewall executor behind SAFE_MODE and human approval.</li>
+        <li>Make the flow key a setting and run the port-scan rule on three-tuple flows alongside five-tuple ones.</li>
+        <li>Close idle windows on a timer and track TCP connection state for faster, more accurate alerts.</li>
+        <li>Add rules for ICMP floods, RST anomalies and brute force; later, an anomaly model whose outputs still carry evidence.</li>
+        <li>Live updates over WebSocket, authentication for simulations, and an origin allowlist for the API.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 style="margin-top:9mm"><span class="num">8</span>Conclusion</h2>
+  <p>AEGIS shows that intrusion detection can be transparent without being trivial. Every alert it raises carries the measurements, thresholds and decisions behind it, and the same traffic always produces the same verifiable record. The response layer is safe by design, and the web interface makes each step understandable to someone new to the field.</p>
+  <p>Its limits are documented and measurable, which makes the next steps clear: wider attack coverage, faster alerts, and a carefully guarded path from simulated to real response.</p>
+
+  <h3>References</h3>
+  <ol class="note">
+    <li>W. Eddy, Ed., <i>Transmission Control Protocol (TCP)</i>, RFC 9293, IETF, 2022.</li>
+    <li>W. Eddy, <i>TCP SYN Flooding Attacks and Common Mitigations</i>, RFC 4987, IETF, 2007.</li>
+    <li>J. Arkko, M. Cotton, L. Vegoda, <i>IPv4 Address Blocks Reserved for Documentation</i>, RFC 5737, IETF, 2010.</li>
+    <li>S. McCanne, V. Jacobson, "The BSD Packet Filter: A New Architecture for User-level Packet Capture", USENIX Winter Conference, 1993.</li>
+    <li>M. Roesch, "Snort: Lightweight Intrusion Detection for Networks", USENIX LISA, 1999.</li>
+    <li>Scapy documentation, scapy.net; FastAPI documentation, fastapi.tiangolo.com.</li>
+  </ol>
+
+</section>
+
+</body>
+</html>
