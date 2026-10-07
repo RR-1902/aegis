@@ -95,6 +95,10 @@ class Settings(BaseSettings):
         default=60,
         description="Duration of temporary IP blocks"
     )
+    allow_simulations: bool = Field(
+        default=True,
+        description="Allow POST /simulations to run synthetic attacks through the pipeline"
+    )
     
     # Database
     database_url: str = Field(

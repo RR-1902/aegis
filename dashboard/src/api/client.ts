@@ -17,13 +17,23 @@ export function getApiBaseUrl(): string {
 }
 
 export async function getJson(path: string): Promise<unknown> {
+  return requestJson(path, { headers: { Accept: 'application/json' } });
+}
+
+export async function postJson(path: string, body: unknown): Promise<unknown> {
+  return requestJson(path, {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+async function requestJson(path: string, init: RequestInit): Promise<unknown> {
   const url = new URL(path, getApiBaseUrl()).toString();
 
   let response: Response;
   try {
-    response = await fetch(url, {
-      headers: { Accept: 'application/json' },
-    });
+    response = await fetch(url, init);
   } catch {
     throw new ApiError('Backend unavailable. Could not reach the AEGIS API.', 'network_failure');
   }
