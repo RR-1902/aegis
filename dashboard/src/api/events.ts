@@ -1,5 +1,13 @@
-import { ApiError, getJson } from './client';
-import type { EventFilters, EventsListResponse, HealthResponse, SecurityEvent } from '../types/api';
+import { ApiError, getJson, postJson } from './client';
+import type {
+  EventFilters,
+  EventsListResponse,
+  HealthResponse,
+  SecurityEvent,
+  SimulationResult,
+  SimulationScenario,
+  SimulationsResponse,
+} from '../types/api';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -144,4 +152,37 @@ export async function fetchEvents(filters: EventFilters = {}): Promise<EventsLis
 
 export async function fetchEvent(eventId: string): Promise<SecurityEvent> {
   return validateSecurityEvent(await getJson(`/events/${encodeURIComponent(eventId)}`));
+}
+
+function isScenario(value: unknown): value is SimulationScenario {
+  return isObject(value)
+    && typeof value.id === 'string'
+    && typeof value.name === 'string'
+    && typeof value.summary === 'string'
+    && typeof value.flow_key_strategy === 'string'
+    && typeof value.target === 'string';
+}
+
+export async function fetchSimulations(): Promise<SimulationsResponse> {
+  const data = await getJson('/simulations');
+  if (!isObject(data) || typeof data.enabled !== 'boolean' || !Array.isArray(data.scenarios) || !data.scenarios.every(isScenario)) {
+    throw new ApiError('The API returned an invalid list of simulations.', 'invalid_simulations');
+  }
+  return data as SimulationsResponse;
+}
+
+export async function runSimulation(scenarioId: string): Promise<SimulationResult> {
+  const data = await postJson('/simulations', { scenario: scenarioId });
+  if (
+    !isObject(data)
+    || !isScenario(data.scenario)
+    || typeof data.source_ip !== 'string'
+    || typeof data.packets !== 'number'
+    || typeof data.stored !== 'number'
+    || !Array.isArray(data.events)
+    || !data.events.every(isSecurityEvent)
+  ) {
+    throw new ApiError('The API returned an invalid simulation result.', 'invalid_simulation_result');
+  }
+  return data as SimulationResult;
 }

@@ -88,3 +88,24 @@ export type EventFilters = {
   lifecycle_status?: 'no_action' | 'simulated' | 'rejected';
   limit?: number;
 };
+
+export type SimulationScenario = {
+  id: string;
+  name: string;
+  summary: string;
+  flow_key_strategy: string;
+  target: string;
+};
+
+export type SimulationsResponse = {
+  enabled: boolean;
+  scenarios: SimulationScenario[];
+};
+
+export type SimulationResult = {
+  scenario: SimulationScenario;
+  source_ip: string;
+  packets: number;
+  stored: number;
+  events: SecurityEvent[];
+};
